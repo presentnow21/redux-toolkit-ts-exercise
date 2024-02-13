@@ -5,11 +5,16 @@ import styles from '@/styles/Home.module.css';
 import { AppDispatch, useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import { counterActions } from '@/store/modules/counter';
+import { useState } from 'react';
+import { userActions } from '@/store/modules/user';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const [id, setId] = useState('');
   const count = useAppSelector(({ counter }) => counter.count);
+  const loading = useAppSelector(({ user }) => user.loading);
+  const user = useAppSelector(({ user }) => user.user);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClickUp = () => {
@@ -18,6 +23,10 @@ export default function Home() {
 
   const handleClickDown = () => {
     dispatch(counterActions.decrement());
+  };
+
+  const getUser = () => {
+    dispatch(userActions.tryLogiin(parseInt(id)));
   };
   return (
     <>
@@ -32,6 +41,11 @@ export default function Home() {
         <button onClick={handleClickUp}>up</button>
         <button onClick={handleClickDown}>down</button>
       </div>
+
+      <input type="text" value={id} onChange={(ev) => setId(ev.target.value)} />
+      <button onClick={getUser}>getUser</button>
+      {loading ? <div>loading...</div> : null}
+      {user ? <pre>{user.name}</pre> : <div>user 없음</div>}
     </>
   );
 }
