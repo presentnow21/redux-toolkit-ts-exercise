@@ -2,11 +2,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
-import { AppDispatch, useAppSelector } from '@/store';
+import wrapper, { AppDispatch, useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import { counterActions } from '@/store/modules/counter';
-
-const inter = Inter({ subsets: ['latin'] });
+import { GetServerSideProps } from 'next';
 
 export default function Home() {
   const count = useAppSelector(({ counter }) => counter.count);
@@ -35,3 +34,16 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps(
+    (store) =>
+      async ({ req, res, query, ...rest }) => {
+        return { props: {} };
+      }
+  );
+
+// Home.getInitialProps = wrapper.getInitialPageProps(
+//   (store) =>
+//     ({ pathname, req, res }) => {}
+// );
