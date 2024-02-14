@@ -5,11 +5,18 @@ import styles from '@/styles/Home.module.css';
 import { AppDispatch, useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import { counterActions } from '@/store/modules/counter';
+import { asyncFetchUser } from '@/store/modules/usert';
+import { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const [id, setId] = useState('');
   const count = useAppSelector(({ counter }) => counter.count);
+  const user = useAppSelector(({ user }) => user.user);
+  const loading = useAppSelector(({ user }) => user.loading);
+  const error = useAppSelector(({ user }) => user.error);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClickUp = () => {
@@ -18,6 +25,12 @@ export default function Home() {
 
   const handleClickDown = () => {
     dispatch(counterActions.decrement());
+  };
+
+  const getUser = () => {
+    let parsedId = parseInt(id);
+    if (isNaN(parsedId)) return alert('유저 번호를 입력하세요');
+    dispatch(asyncFetchUser(parsedId));
   };
   return (
     <>
@@ -32,6 +45,12 @@ export default function Home() {
         <button onClick={handleClickUp}>up</button>
         <button onClick={handleClickDown}>down</button>
       </div>
+      <input type="text" value={id} onChange={(ev) => setId(ev.target.value)} />
+      <button onClick={getUser}>getUser</button>
+
+      {user && <div>{user.name}</div>}
+      {error && <div>{error}</div>}
+      {loading && <div>loading...</div>}
     </>
   );
 }

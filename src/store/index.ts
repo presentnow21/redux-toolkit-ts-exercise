@@ -1,13 +1,16 @@
 import { Action, combineReducers, configureStore } from '@reduxjs/toolkit';
 import counter, { CounterInitalState } from './modules/counter';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import user, { UserInitialState } from './modules/usert';
 
 export interface IState {
   counter: CounterInitalState;
+  user: UserInitialState;
 }
 
 const rootReducer = combineReducers({
   counter: counter,
+  user: user,
 });
 
 const store = configureStore({
